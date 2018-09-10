@@ -1,0 +1,81 @@
+---
+
+- name: Include enc var file containing aws_keys
+  include_vars: ../vars/aws_keys.yml
+
+- name: Create security group
+  ec2_group:
+    name: "{{ security_group }}"
+    description: "Security Group for aws webserver hosts"
+    aws_access_key: "{{ ec2_access_key }}"
+    aws_secret_key: "{{ ec2_secret_key }}"
+    region: "{{ region }}"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: basic_firewall
+
+- name: Launch EC2 webserver instance
+  ec2:
+    group: "{{ security_group }}"
+    instance_type: "{{ instance_type }}"
+    image: "{{ image }}"
+    wait: yes
+    region: "{{ region }}"
+    keypair: "{{ keypair }}"
+    instance_tags: 
+      type: webserver
+    count_tag: 
+      type: webserver
+    exact_count: 2
+    aws_access_key: "{{ ec2_access_key }}"
+    aws_secret_key: "{{ ec2_secret_key }}"
+
+- name: Start a stopped EC2 webserver instances if needed
+  ec2:
+    instance_tags:
+      type: webserver
+    state: running
+    wait: yes
+    region: "{{ region }}"
+    aws_access_key: "{{ ec2_access_key }}"
+    aws_secret_key: "{{ ec2_secret_key }}"
+  ignore_errors: yes
+
+- name: Get facts for EC2 webserver instances
+  ec2_instance_facts:
+    filters: 
+      "tag:type": webserver
+      instance-state-name: running
+    region: "{{ region }}"
+    aws_access_key: "{{ ec2_access_key }}"
+    aws_secret_key: "{{ ec2_secret_key }}"
+  register: ec2_web
+
+- name: Wait for SSH #connection
+  wait_for:
+    host: "{{ item.public_ip_address }}"
+    port: 22
+    delay: 10
+    timeout: 120
+    state: started
+  with_items: "{{ ec2_web.instances }}"
+
+- name: Add EC2 webserver instances to in-mem inventory for further use
+  add_host:
+    name: "{{ item.public_ip_address }}"
+    groups: webservers
+  with_items: "{{ ec2_web.instances }}"

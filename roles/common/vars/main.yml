@@ -1,0 +1,9 @@
+---
+# vars file for common
+instance_type: t2.micro
+security_group: webservers
+image: ami-04681a1dbd79675a5
+keypair: aws-key
+region: us-east-1
+ec2_access_key: "{{ vault_ec2_access_key }}"
+ec2_secret_key: "{{ vault_ec2_secret_key }}"

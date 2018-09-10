@@ -1,0 +1,16 @@
+---
+
+##  Tasks file for installing software on EC2 webserver instances
+- name: Install Python and httpd
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: 
+    - python
+    - httpd
+
+- name: Start httpd service
+  service:
+    name: httpd
+    state: started
+    enabled: yes
