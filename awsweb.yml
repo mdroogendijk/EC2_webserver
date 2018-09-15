@@ -6,12 +6,12 @@
 #                                                                                       #
 #########################################################################################
 
-## Providing two running EC2 webserver instances
+## Providing two running EC2 webserver instances and Elastic Load Balancer in front of them
 - hosts: local
   connection: local
   gather_facts: False
   roles:
-    - common
+    - infrastructure
 
 ## Installation and configuration on EC2 webserver instances
 - hosts: webservers
