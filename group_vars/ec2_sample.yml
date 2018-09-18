@@ -1,0 +1,4 @@
+---
+image: ami-04681a1dbd79675a5
+ec2_access_key: "{{ vault_ec2_access_key }}"
+ec2_secret_key: "{{ vault_ec2_secret_key }}"

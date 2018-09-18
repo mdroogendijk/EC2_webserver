@@ -1,0 +1,4 @@
+---
+# Encrypt this with vault!
+vault_ec2_access_key: REPLACE-THIS-WITH-YOUR-ACCESS-KEY
+vault_ec2_secret_key: REPLACE-THIS-WITH-YOUR-SECRET-KEY
