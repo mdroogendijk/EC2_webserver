@@ -36,6 +36,8 @@
     wait: yes
     region: "{{ region }}"
     keypair: "{{ keypair }}"
+    state: running
+    wait: yes
     instance_tags: 
       type: webserver
     count_tag: 
@@ -43,17 +45,6 @@
     exact_count: 2
     aws_access_key: "{{ ec2_access_key }}"
     aws_secret_key: "{{ ec2_secret_key }}"
-
-- name: Start a stopped EC2 webserver instances if needed
-  ec2:
-    instance_tags:
-      type: webserver
-    state: running
-    wait: yes
-    region: "{{ region }}"
-    aws_access_key: "{{ ec2_access_key }}"
-    aws_secret_key: "{{ ec2_secret_key }}"
-  ignore_errors: yes
 
 - name: Get facts for EC2 webserver instances
   ec2_instance_facts:
