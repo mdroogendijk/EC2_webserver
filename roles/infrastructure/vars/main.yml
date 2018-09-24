@@ -1,9 +1,9 @@
 ---
-# vars file for common
+## vars file for infrastructure
 instance_type: t2.micro
-security_group: webservers
+security_group: awsservers
 image: ami-04681a1dbd79675a5
-keypair: aws-key
+keypair: aws-key #REPLACE_THIS_WITH_YOUR_KEY_ALIAS
 region: us-east-1
 ec2_access_key: "{{ vault_ec2_access_key }}"
 ec2_secret_key: "{{ vault_ec2_secret_key }}"
